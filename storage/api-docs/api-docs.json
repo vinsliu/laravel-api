@@ -116,6 +116,16 @@
                             "type": "string",
                             "example": "application/json"
                         }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Token d'authentification",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Bearer 1|XyZabc123456..."
+                        }
                     }
                 ],
                 "requestBody": {
@@ -220,12 +230,7 @@
                             }
                         }
                     }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                }
             }
         },
         "/api/v1/books/{id}": {
@@ -892,15 +897,6 @@
                         }
                     }
                 }
-            }
-        }
-    },
-    "components": {
-        "securitySchemes": {
-            "bearerAuth": {
-                "type": "http",
-                "bearerFormat": "JWT",
-                "scheme": "bearer"
             }
         }
     },

@@ -90,7 +90,6 @@ class BookController extends Controller
         path: "/api/v1/books",
         summary: "Créer un nouveau livre",
         tags: ["Books"],
-        security: [["bearerAuth" => []]],
         parameters: [
             new OA\Parameter(
                 name: "Accept",
@@ -98,6 +97,16 @@ class BookController extends Controller
                 required: true,
                 schema: new OA\Schema(type: "string", example: "application/json"),
                 description: "Le type de contenu attendu par l’API"
+            ),
+            new OA\Parameter(
+                name: "Authorization",
+                in: "header",
+                required: true,
+                description: "Token d'authentification",
+                schema: new OA\Schema(
+                    type: "string",
+                    example: "Bearer 1|XyZabc123456..."
+                )
             )
         ],
         requestBody: new OA\RequestBody(

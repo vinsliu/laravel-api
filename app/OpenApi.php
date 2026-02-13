@@ -15,12 +15,12 @@ use OpenApi\Attributes as OA;
     description: 'Local server'
 )]
 
-#[OA\SecurityScheme(
-    securityScheme: "bearerAuth",
-    type: "http",
-    scheme: "bearer",
-    bearerFormat: "JWT"
-)]
+// #[OA\SecurityScheme(
+//     securityScheme: "bearerAuth",
+//     type: "http",
+//     scheme: "bearer",
+//     bearerFormat: "JWT"
+// )]
 
 
 class OpenApi
