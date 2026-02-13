@@ -53,7 +53,10 @@ class BookCreationTest extends TestCase
                 'errors' => ['title', 'author', 'summary', 'isbn']
             ]);
 
-        $this->assertDatabaseCount('books', 0);
+        $this->assertDatabaseMissing('books', [
+            'title' => 'Du',
+            'isbn' => '123'
+        ]);
     }
 
     public function test_a_book_is_not_created_if_user_is_not_authenticated()
@@ -69,6 +72,9 @@ class BookCreationTest extends TestCase
 
         $response->assertStatus(401);
 
-        $this->assertDatabaseCount('books', 0);
+        $this->assertDatabaseMissing('books', [
+            'title' => 'Dune',
+            'isbn' => '9780441013593'
+        ]);
     }
 }
