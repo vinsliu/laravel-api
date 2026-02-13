@@ -46,4 +46,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function usesProfessionalEmail(): bool
+    {
+        return !preg_match('/@(gmail|yahoo|hotmail|live|outlook)\./', $this->email);
+    }
 }
