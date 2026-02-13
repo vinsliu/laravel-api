@@ -15,6 +15,15 @@ class UserController extends Controller
         path: "/api/v1/register",
         summary: "Inscription d'un utilisateur",
         tags: ["Auth"],
+        parameters: [
+            new OA\Parameter(
+                name: "Accept",
+                in: "header",
+                required: true,
+                description: "Format de réponse attendu",
+                schema: new OA\Schema(type: "string", example: "application/json")
+            )
+        ],
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
@@ -27,8 +36,43 @@ class UserController extends Controller
             )
         ),
         responses: [
-            new OA\Response(response: 201, description: "Utilisateur créé"),
-            new OA\Response(response: 422, description: "Erreur de validation")
+            new OA\Response(
+                response: 201,
+                description: "Utilisateur créé",
+                content: new OA\JsonContent(
+                    type: "object",
+                    properties: [
+                        new OA\Property(
+                            property: "user",
+                            type: "object",
+                            properties: [
+                                new OA\Property(property: "id", type: "integer", example: 1),
+                                new OA\Property(property: "name", type: "string", example: "John Doe"),
+                                new OA\Property(property: "email", type: "string", example: "john@example.com"),
+                                new OA\Property(property: "created_at", type: "string", format: "date-time", example: "2024-02-10T10:15:30Z"),
+                                new OA\Property(property: "updated_at", type: "string", format: "date-time", example: "2024-02-10T10:15:30Z")
+                            ]
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 422,
+                description: "Erreur de validation",
+                content: new OA\JsonContent(
+                    type: "object",
+                    properties: [
+                        new OA\Property(
+                            property: "errors",
+                            type: "object",
+                            example: [
+                                "email" => ["The email has already been taken."],
+                                "password" => ["The password must be at least 8 characters."]
+                            ]
+                        )
+                    ]
+                )
+            )
         ]
     )]
     public function register(Request $request)
@@ -54,6 +98,15 @@ class UserController extends Controller
         path: "/api/v1/login",
         summary: "Connexion utilisateur et génération d'un token",
         tags: ["Auth"],
+        parameters: [
+            new OA\Parameter(
+                name: "Accept",
+                in: "header",
+                required: true,
+                description: "Format de réponse attendu",
+                schema: new OA\Schema(type: "string", example: "application/json")
+            )
+        ],
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
@@ -65,9 +118,62 @@ class UserController extends Controller
             )
         ),
         responses: [
-            new OA\Response(response: 200, description: "Connexion réussie"),
-            new OA\Response(response: 401, description: "Identifiants invalides"),
-            new OA\Response(response: 422, description: "Erreur de validation")
+            new OA\Response(
+                response: 200,
+                description: "Connexion réussie",
+                content: new OA\JsonContent(
+                    type: "object",
+                    properties: [
+                        new OA\Property(
+                            property: "user",
+                            type: "object",
+                            properties: [
+                                new OA\Property(property: "id", type: "integer", example: 1),
+                                new OA\Property(property: "name", type: "string", example: "John Doe"),
+                                new OA\Property(property: "email", type: "string", example: "john@example.com"),
+                                new OA\Property(property: "created_at", type: "string", format: "date-time", example: "2024-02-10T10:15:30Z"),
+                                new OA\Property(property: "updated_at", type: "string", format: "date-time", example: "2024-02-10T10:15:30Z")
+                            ]
+                        ),
+                        new OA\Property(
+                            property: "token",
+                            type: "string",
+                            example: "1|XyZabc123456789"
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 401,
+                description: "Identifiants invalides",
+                content: new OA\JsonContent(
+                    type: "object",
+                    properties: [
+                        new OA\Property(
+                            property: "message",
+                            type: "string",
+                            example: "Invalid credentials"
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 422,
+                description: "Erreur de validation",
+                content: new OA\JsonContent(
+                    type: "object",
+                    properties: [
+                        new OA\Property(
+                            property: "errors",
+                            type: "object",
+                            example: [
+                                "email" => ["The email field is required."],
+                                "password" => ["The password field is required."]
+                            ]
+                        )
+                    ]
+                )
+            )
         ]
     )]
     public function login(Request $request)
@@ -97,10 +203,46 @@ class UserController extends Controller
         path: "/api/v1/logout",
         summary: "Déconnexion de l'utilisateur (suppression du token courant)",
         tags: ["Auth"],
-        security: [["bearerAuth" => []]],
+        parameters: [
+            new OA\Parameter(
+                name: "Accept",
+                in: "header",
+                required: true,
+                description: "Format de réponse attendu",
+                schema: new OA\Schema(type: "string", example: "application/json")
+            ),
+            new OA\Parameter(
+                name: "Authorization",
+                in: "header",
+                required: true,
+                description: "Token d'authentification",
+                schema: new OA\Schema(
+                    type: "string",
+                    example: "Bearer 1|XyZabc123456..."
+                )
+            )
+        ],
         responses: [
-            new OA\Response(response: 200, description: "Déconnexion réussie"),
-            new OA\Response(response: 401, description: "Non authentifié")
+            new OA\Response(
+                response: 200,
+                description: "Déconnexion réussie",
+                content: new OA\JsonContent(
+                    type: "object",
+                    properties: [
+                        new OA\Property(property: "message", type: "string", example: "Logged out")
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 401,
+                description: "Non authentifié",
+                content: new OA\JsonContent(
+                    type: "object",
+                    properties: [
+                        new OA\Property(property: "message", type: "string", example: "Unauthenticated.")
+                    ]
+                )
+            )
         ]
     )]
     public function logout(Request $request)
